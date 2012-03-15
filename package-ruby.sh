@@ -3,10 +3,13 @@
 set -e
 set -x
 
-sudo apt-get install libssl-dev
+# Intall a bunch of stuff I want ruby built against
+sudo apt-get update
+sudo apt-get install -y libssl-dev libyaml-dev libffi-dev libxml2 libxml2-dev libxslt1-dev
+
 # for some reason this installs over and over again. skip it if we can.
 if [[ ! -x /opt/ruby/bin/fpm ]]; then
-    sudo gem install fpm
+  sudo gem install fpm
 fi
 
 RUBY_VERSION="1.9.3-p125"
@@ -38,6 +41,7 @@ fpm -s dir -t deb -n ruby -v ${RUBY_VERSION} -a x86_64 -C /tmp/installdir \
   -d "libc6 (>= 2.6)" -d "libffi5 (>= 3.0.4)" -d "libgdbm3 (>= 1.8.3)" \
   -d "libncurses5 (>= 5.7)" -d "libreadline6 (>= 6.1)" \
   -d "libssl0.9.8 (>= 0.9.8)" -d "zlib1g (>= 1:1.2.2)" \
+  -d "libyaml-dev (>= 0.1.3-1)" \
   usr/bin usr/lib usr/share/man usr/include
 
 # copy the deb package back to your vagrant folder
