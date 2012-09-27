@@ -4,15 +4,15 @@ set -e
 set -x
 
 # Intall a bunch of stuff I want ruby built against
-sudo apt-get update
-sudo apt-get install -y libssl-dev libyaml-dev libffi-dev libxml2 libxml2-dev libxslt1-dev
+sudo apt-get -y update
+sudo apt-get -y install libssl-dev libreadline-dev libyaml-dev build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison libffi-dev
 
 # for some reason this installs over and over again. skip it if we can.
 if [[ ! -x /opt/ruby/bin/fpm ]]; then
   sudo gem install fpm
 fi
 
-RUBY_VERSION="1.9.3-p125"
+RUBY_VERSION="1.9.3-p194"
 SOURCE_FILE_NAME=ruby-${RUBY_VERSION}
 INSTALL_DIR=/tmp/installdir
 WORKING_DIRECTORY=~/source
@@ -32,17 +32,21 @@ if [[ ! -f ${SOURCE_FILE_NAME}.tar.gz ]]; then
 fi
 tar -zxvf ${SOURCE_FILE_NAME}.tar.gz
 cd ${SOURCE_FILE_NAME}
-time (./configure --prefix=/usr && make && make install DESTDIR=${INSTALL_DIR})
+time (./configure --prefix=/usr --with-opt-dir=/usr/local && make && make install DESTDIR=${INSTALL_DIR})
 cd ..
 
 # package up the newly compiled ruby
-fpm -s dir -t deb -n ruby -v ${RUBY_VERSION} -a x86_64 -C /tmp/installdir \
-  -p ${PACKAGE_NAME} -d "libstdc++6 (>= 4.4.3)" \
-  -d "libc6 (>= 2.6)" -d "libffi5 (>= 3.0.4)" -d "libgdbm3 (>= 1.8.3)" \
+fpm -s dir -t deb -n ruby -v 1.9.3-p194 -C /tmp/ruby193 \
+  -p ruby-VERSION_ARCH.deb -d "libstdc++6 (>= 4.4.3)" \
+  -d "libc6 (>= 2.6)" -d "libffi6 (>= 3.0.10)" -d "libgdbm3 (>= 1.8.3)" \
   -d "libncurses5 (>= 5.7)" -d "libreadline6 (>= 6.1)" \
   -d "libssl0.9.8 (>= 0.9.8)" -d "zlib1g (>= 1:1.2.2)" \
-  -d "libyaml-dev (>= 0.1.3-1)" \
   usr/bin usr/lib usr/share/man usr/include
 
+# I have NFI if this is required
+# apt-get install libssl0.9.8 libffi6
+
 # copy the deb package back to your vagrant folder
-cp ${PACKAGE_NAME} /vagrant
+if [[ -f /vagrant ]]; then
+  cp ${PACKAGE_NAME} /vagrant
+fi
