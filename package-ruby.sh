@@ -17,7 +17,7 @@ if [[ ! $(which fpm) ]]; then
   sudo gem install fpm
 fi
 
-RUBY_VERSION="1.9.3-p194"
+RUBY_VERSION="1.9.3-p125"
 SOURCE_FILE_NAME=ruby-${RUBY_VERSION}
 INSTALL_DIR=/tmp/installdir
 WORKING_DIRECTORY=/tmp/working
@@ -41,7 +41,7 @@ time (./configure --prefix=/usr --with-opt-dir=/usr/local && make && make instal
 cd ..
 
 # package up the newly compiled ruby
-fpm -s dir -t deb -n ruby -v 1.9.3-p194 -C ${INSTALL_DIR} \
+fpm -s dir -t deb -n ruby -v ${RUBY_VERSION} -C ${INSTALL_DIR} \
   -p ruby-VERSION_ARCH.deb -d "libstdc++6 (>= 4.4.3)" \
   -d "libc6 (>= 2.6)" -d "libffi6 (>= 3.0.10)" -d "libgdbm3 (>= 1.8.3)" \
   -d "libncurses5 (>= 5.7)" -d "libreadline6 (>= 6.1)" \
