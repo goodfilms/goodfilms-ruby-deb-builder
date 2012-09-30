@@ -21,7 +21,7 @@ RUBY_VERSION="1.9.3-p125"
 SOURCE_FILE_NAME=ruby-${RUBY_VERSION}
 INSTALL_DIR=/tmp/installdir
 WORKING_DIRECTORY=/tmp/working
-PACKAGE_NAME=goodfilms-${SOURCE_FILE_NAME}_x86_64.deb
+PACKAGE_NAME=goodfilms-${SOURCE_FILE_NAME}_amd64.deb
 
 # clean any previous build artifacts
 rm -rf ${INSTALL_DIR}
